@@ -1,0 +1,351 @@
+{
+  "name": "Sheet Manager Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=   {{ $('When chat message received').item.json.chatInput }}",
+        "options": {
+          "systemMessage": "Tum ek Excel/Sheet Data Manager Agent ho jo Student data manage karte ho.\n\nSheet ke columns: Name, Age, Row_ID (custom unique ID)\nHar row ka ek \"row_number\" bhi hota hai (Google Sheets ka apna internal position) jo Read_Sheet_Data se milta hai.\n\nTumhare paas ye tools hain:\n1. Read_Sheet_Data: current sheet ka poora data dekhne ke liye\n2. Add_New_Student: naya student add karne ke liye\n3. Update_Student: kisi student ki Age ya Name update karne ke liye (Row_ID se match karta hai)\n4. Delete_Student: kisi student ko delete karne ke liye (Google Sheets ke asal \"row_number\" ki zaroorat hoti hai, Row_ID ki nahi)\n\nRules:\n1. Naya student add karne se pehle hamesha Read_Sheet_Data se dekho aur next Row_ID khud calculate karo (existing max Row_ID + 1). User se kabhi Row_ID mat poocho.\n2. Update ya Delete karne se pehle hamesha Read_Sheet_Data se pehle us student ko dhoondo (naam se match karo).\n3. Delete karte waqt Read_Sheet_Data se mile hue \"row_number\" ko use karo, Row_ID ko nahi.\n4. Agar user ka command ambiguous ho (jaise same naam ke 2 students hon), confirmation pucho.\n5. Har action ke baad user ko clearly batao kya hua (kaunsa student, kya operation, kya result).\n6. Sirf wahi action lo jo user ne explicitly manga ho."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        496,
+        0
+      ],
+      "id": "cf9d9603-5ecc-4565-9403-98f9a946aeec",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        352,
+        192
+      ],
+      "id": "86ac40c9-bbf6-4e1d-9e07-7c020236b717",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1V73DlaIx-71gvQzH7Iti2z9QyAtpKclzV80J059Inus",
+          "mode": "list",
+          "cachedResultName": "Copy of Student Data Agent test copy",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1V73DlaIx-71gvQzH7Iti2z9QyAtpKclzV80J059Inus/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1V73DlaIx-71gvQzH7Iti2z9QyAtpKclzV80J059Inus/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Name', ``, 'string') }}",
+            "Age": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Age', ``, 'string') }}",
+            "Row_ID": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Row_ID', ``, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Age",
+              "displayName": "Age",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Row_ID",
+              "displayName": "Row_ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        496,
+        272
+      ],
+      "id": "e4372150-1e07-4503-8590-64791a9f92bf",
+      "name": "Add_New_Student",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "R0IMCuZot2KbtPb7",
+          "name": "Google Sheets account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-safeguard-20b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        160,
+        192
+      ],
+      "id": "1da390ad-bcb0-49dc-974e-d5c639193936",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "hANIJ5PjQrKyZhAA",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -16,
+        0
+      ],
+      "id": "2262db97-ef29-4888-a2b0-3636740bc34f",
+      "name": "When chat message received",
+      "webhookId": "d01db83e-bce2-40d4-9a85-e963dcf0a638"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1V73DlaIx-71gvQzH7Iti2z9QyAtpKclzV80J059Inus",
+          "mode": "list",
+          "cachedResultName": "Copy of Student Data Agent test copy",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1V73DlaIx-71gvQzH7Iti2z9QyAtpKclzV80J059Inus/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1V73DlaIx-71gvQzH7Iti2z9QyAtpKclzV80J059Inus/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        928,
+        208
+      ],
+      "id": "c1dbcd9e-2c8e-4f8f-b778-e80b1efb684a",
+      "name": "Read_Sheet_Data",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "R0IMCuZot2KbtPb7",
+          "name": "Google Sheets account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "documentId": {
+          "__rl": true,
+          "value": "1V73DlaIx-71gvQzH7Iti2z9QyAtpKclzV80J059Inus",
+          "mode": "list",
+          "cachedResultName": "Copy of Student Data Agent test copy",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1V73DlaIx-71gvQzH7Iti2z9QyAtpKclzV80J059Inus/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1V73DlaIx-71gvQzH7Iti2z9QyAtpKclzV80J059Inus/edit#gid=0"
+        }
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        768,
+        288
+      ],
+      "id": "63cfe593-ae2c-45e0-8d74-fb3f9bda4009",
+      "name": "Delete_Student",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "R0IMCuZot2KbtPb7",
+          "name": "Google Sheets account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "description": "Sheet ke saare students ko diye gaye custom order mein rearrange karta hai. Input mein sorted_data field chahiye jisme students ki poori list JSON format mein ho.",
+        "workflowId": {
+          "__rl": true,
+          "value": "JgmXDimHcAfXimCs",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/JgmXDimHcAfXimCs",
+          "cachedResultName": "My workflow 11"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "sorted_data": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('sorted_data', ``, 'string') }}"
+          },
+          "matchingColumns": [
+            "sorted_data"
+          ],
+          "schema": [
+            {
+              "id": "sorted_data",
+              "displayName": "sorted_data",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        640,
+        288
+      ],
+      "id": "e632fd01-fde4-480b-862a-c653d8bb7372",
+      "name": "Reorder_Sheet",
+      "notesInFlow": false
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add_New_Student": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read_Sheet_Data": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete_Student": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        []
+      ]
+    },
+    "Reorder_Sheet": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "7987ceba-dd6a-40bb-9bee-166ac1003a27",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "27cbcdc9af6c0b669e68a854f75870608abba282cd43d6b03653d7ac7ab27e3c"
+  },
+  "id": "eYhjmMsK7BT6jliM",
+  "tags": []
+}
