@@ -45,6 +45,17 @@ This mirrors how real-world agentic AI systems are architected: a central reason
 - Debugged sub-workflow-as-tool wiring issues (correct Tool port connections, workflow activation, JSON string parsing via a Code node) to enable safe, delegated bulk operations
 - Learned and implemented safe testing practices (sandbox/test-copy data) after an early destructive-operation mistake
 
+ 🛡️ Safety & Reliability Layer
+
+After the initial version was working, I stress-tested it and found real failure modes — then fixed them:
+
+- **Confirmation before destructive actions:** Delete and Reorder operations now require the agent to preview the exact change and get explicit user confirmation before executing.
+- **Stale-data protection:** The agent re-reads the live sheet immediately before acting (not relying on data it read earlier), preventing it from acting on outdated row positions.
+- **Hardcoded parameter bug:** Found and fixed a case where a "destructive" tool had a hardcoded row number instead of a dynamic AI-filled value — meaning it always deleted the same row regardless of the agent's decision.
+- **Fail-safe validation:** A dedicated validation step now checks incoming data is well-formed *before* any data is cleared — if validation fails, the workflow aborts safely instead of wiping data.
+- **Automatic backup:** Before any reorder/rewrite operation, the current sheet state is automatically snapshotted to a separate backup file.
+- **Reliable data sourcing:** Fixed an intermittent bug where a processing node pulled data from the wrong upstream node — now explicitly sources data from the original trigger to guarantee consistency regardless of pipeline length.
+
 ## 📌 Status
 
 This is an actively evolving project. Planned improvements include multi-user support, Microsoft Excel/OneDrive integration, and confirmation safeguards for destructive operations.
