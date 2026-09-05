@@ -1,0 +1,358 @@
+{
+  "name": "My workflow 11",
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "sorted_data"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -80,
+        0
+      ],
+      "id": "cbb5f357-6bf0-400f-bd66-e5b7fd38392a",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "operation": "clear",
+        "documentId": {
+          "__rl": true,
+          "value": "1V73DlaIx-71gvQzH7Iti2z9QyAtpKclzV80J059Inus",
+          "mode": "list",
+          "cachedResultName": "Copy of Student Data Agent test copy",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1V73DlaIx-71gvQzH7Iti2z9QyAtpKclzV80J059Inus/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1V73DlaIx-71gvQzH7Iti2z9QyAtpKclzV80J059Inus/edit#gid=0"
+        },
+        "clear": "specificRange",
+        "range": "A2:C1000"
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        864,
+        0
+      ],
+      "id": "33099567-498e-46c8-ae29-76fb99925a7d",
+      "name": "Clear_Old_Data",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "R0IMCuZot2KbtPb7",
+          "name": "Google Sheets account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1V73DlaIx-71gvQzH7Iti2z9QyAtpKclzV80J059Inus",
+          "mode": "list",
+          "cachedResultName": "Copy of Student Data Agent test copy",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1V73DlaIx-71gvQzH7Iti2z9QyAtpKclzV80J059Inus/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1V73DlaIx-71gvQzH7Iti2z9QyAtpKclzV80J059Inus/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Age",
+              "displayName": "Age",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Row_ID",
+              "displayName": "Row_ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1216,
+        0
+      ],
+      "id": "5f556c8c-a70e-4d6a-8586-5b1bbff2a766",
+      "name": "Write_Sorted_Data",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "R0IMCuZot2KbtPb7",
+          "name": "Google Sheets account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "   const raw = $('When Executed by Another Workflow').first().json.sorted_data;\n   const students = JSON.parse(raw);\n   return students.map(student => ({ json: student }));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1024,
+        0
+      ],
+      "id": "50bab14a-a36e-4f47-acb5-9aeb893deff7",
+      "name": "Parse_And_Split"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1lvMLUQkPOxxV--whad_omM-be5gpDTWmZlOETU2JQ7c",
+          "mode": "list",
+          "cachedResultName": "Student Data Agent",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lvMLUQkPOxxV--whad_omM-be5gpDTWmZlOETU2JQ7c/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lvMLUQkPOxxV--whad_omM-be5gpDTWmZlOETU2JQ7c/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        320,
+        0
+      ],
+      "id": "f85ad13a-8ebb-47a4-a2c9-d584e9af9d6e",
+      "name": "Read_Before_Backup",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "R0IMCuZot2KbtPb7",
+          "name": "Google Sheets account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "clear",
+        "documentId": {
+          "__rl": true,
+          "value": "1V73DlaIx-71gvQzH7Iti2z9QyAtpKclzV80J059Inus",
+          "mode": "list",
+          "cachedResultName": "Backup",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1V73DlaIx-71gvQzH7Iti2z9QyAtpKclzV80J059Inus/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1317843721,
+          "mode": "list",
+          "cachedResultName": "Sheet2",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1V73DlaIx-71gvQzH7Iti2z9QyAtpKclzV80J059Inus/edit#gid=1317843721"
+        },
+        "clear": "specificRange",
+        "range": "A1:C1000"
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        496,
+        0
+      ],
+      "id": "d9ab5ef9-6515-4b28-8967-bce180aa3470",
+      "name": "Clear_Old_Backup",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "R0IMCuZot2KbtPb7",
+          "name": "Google Sheets account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1V73DlaIx-71gvQzH7Iti2z9QyAtpKclzV80J059Inus",
+          "mode": "list",
+          "cachedResultName": "Backup",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1V73DlaIx-71gvQzH7Iti2z9QyAtpKclzV80J059Inus/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1317843721,
+          "mode": "list",
+          "cachedResultName": "Sheet2",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1V73DlaIx-71gvQzH7Iti2z9QyAtpKclzV80J059Inus/edit#gid=1317843721"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        672,
+        0
+      ],
+      "id": "8c14bebc-5ec5-4238-97f3-6b72a1d73216",
+      "name": "Write_Backup_Data",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "R0IMCuZot2KbtPb7",
+          "name": "Google Sheets account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "   const raw = $input.first().json.sorted_data;\n   \n   if (!raw || typeof raw !== 'string') {\n     throw new Error('No valid data received from the agent. Aborting before any changes are made.');\n   }\n   \n   try {\n     JSON.parse(raw);\n   } catch (e) {\n     throw new Error('Received data is not valid JSON. Aborting before any changes are made.');\n   }\n   \n   return $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        128,
+        0
+      ],
+      "id": "d514dd28-5f67-4984-b802-ca277e26d8a0",
+      "name": "Validate_Input"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Validate_Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clear_Old_Data": {
+      "main": [
+        [
+          {
+            "node": "Parse_And_Split",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse_And_Split": {
+      "main": [
+        [
+          {
+            "node": "Write_Sorted_Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read_Before_Backup": {
+      "main": [
+        [
+          {
+            "node": "Clear_Old_Backup",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clear_Old_Backup": {
+      "main": [
+        [
+          {
+            "node": "Write_Backup_Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Write_Backup_Data": {
+      "main": [
+        [
+          {
+            "node": "Clear_Old_Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate_Input": {
+      "main": [
+        [
+          {
+            "node": "Read_Before_Backup",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "14479fd7-d66a-4e35-8d12-04cc2ed156e7",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "27cbcdc9af6c0b669e68a854f75870608abba282cd43d6b03653d7ac7ab27e3c"
+  },
+  "id": "JgmXDimHcAfXimCs",
+  "tags": []
+}
