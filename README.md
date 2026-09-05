@@ -13,6 +13,14 @@ An AI-powered agent that manages spreadsheet data entirely through natural langu
 - **Delete records** — "Remove the student named Ali"
 - **Custom reordering** — "Put all students named Wasiq first, then Ali, then the rest" — the agent reads the current data, sorts it according to instructions, and rewrites the entire sheet automatically
 
+## 🆕 Multi-Platform Support
+
+The agent now supports **both Google Sheets and Microsoft Excel (via OneDrive/Microsoft Graph API)** as backends — the same conversational interface works across either platform, with the user simply specifying which one to use (e.g., "add this to Excel").
+
+- Integrated directly with the Microsoft Graph API using HTTP Request nodes (bypassing limitations in the built-in Excel connector) for reading, adding, updating, and deleting rows.
+- Set up OAuth2 authentication via a custom Azure App Registration, including API permissions and consent flows.
+- The existing safety layer (confirmation before destructive actions, live re-verification) automatically extended to Excel operations without additional engineering — a result of designing the safety rules at the agent-prompt level rather than hardcoding them per platform.
+
 ## 🧠 How It Works
 
 The system is built around an **AI Agent with tool-calling architecture**:
@@ -55,6 +63,8 @@ After the initial version was working, I stress-tested it and found real failure
 - **Fail-safe validation:** A dedicated validation step now checks incoming data is well-formed *before* any data is cleared — if validation fails, the workflow aborts safely instead of wiping data.
 - **Automatic backup:** Before any reorder/rewrite operation, the current sheet state is automatically snapshotted to a separate backup file.
 - **Reliable data sourcing:** Fixed an intermittent bug where a processing node pulled data from the wrong upstream node — now explicitly sources data from the original trigger to guarantee consistency regardless of pipeline length.
+
+- **Cross-platform tool schema issues:** Diagnosed why an HTTP-based Excel tool returned empty values despite a "successful" API response — the `$fromAI()` calls needed explicit type and description arguments to be correctly interpreted by the agent, not just a field name.
 
 ## 📌 Status
 
